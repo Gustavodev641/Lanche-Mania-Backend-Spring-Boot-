@@ -1,0 +1,54 @@
+<html>
+<head>
+<title>Food.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Food.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">cardapio</span><span class="s2">.</span><span class="s1">food</span><span class="s2">;</span>
+
+
+<span class="s0">import </span><span class="s1">jakarta</span><span class="s2">.</span><span class="s1">persistence</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">lombok</span><span class="s2">.</span><span class="s1">EqualsAndHashCode</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">lombok</span><span class="s2">.</span><span class="s1">Getter</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">lombok</span><span class="s2">.</span><span class="s1">NoArgsConstructor</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">jetbrains</span><span class="s2">.</span><span class="s1">annotations</span><span class="s2">.</span><span class="s1">NotNull</span><span class="s2">;</span>
+
+<span class="s1">@Table</span><span class="s2">(</span><span class="s1">name </span><span class="s2">= </span><span class="s3">&quot;foods&quot;</span><span class="s2">)</span>
+<span class="s1">@Entity</span><span class="s2">(</span><span class="s1">name </span><span class="s2">= </span><span class="s3">&quot;foods&quot;</span><span class="s2">)</span>
+<span class="s1">@Getter</span>
+<span class="s1">@NoArgsConstructor</span>
+<span class="s1">@EqualsAndHashCode</span><span class="s2">(</span><span class="s1">of </span><span class="s2">= </span><span class="s3">&quot;id&quot;</span><span class="s2">)</span>
+<span class="s0">public class </span><span class="s1">Food </span><span class="s2">{</span>
+
+    <span class="s1">@Id  @GeneratedValue</span><span class="s2">(</span><span class="s1">strategy </span><span class="s2">= </span><span class="s1">GenerationType</span><span class="s2">.</span><span class="s1">IDENTITY</span><span class="s2">)</span>
+    <span class="s0">private long </span><span class="s1">id</span><span class="s2">;</span>
+
+    <span class="s1">@Column</span><span class="s2">(</span><span class="s1">name </span><span class="s2">= </span><span class="s3">&quot;title&quot;</span><span class="s2">)</span>
+    <span class="s0">private </span><span class="s1">String title</span><span class="s2">;</span>
+
+    <span class="s1">@Column</span><span class="s2">(</span><span class="s1">name </span><span class="s2">= </span><span class="s3">&quot;image&quot;</span><span class="s2">)</span>
+    <span class="s0">private </span><span class="s1">String image</span><span class="s2">;</span>
+
+    <span class="s1">@Column</span><span class="s2">(</span><span class="s1">name </span><span class="s2">= </span><span class="s3">&quot;price&quot;</span><span class="s2">)</span>
+    <span class="s0">private </span><span class="s1">Integer price</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Food</span><span class="s2">(</span><span class="s1">@NotNull foodRequestDTO data</span><span class="s2">){</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">image </span><span class="s2">= </span><span class="s1">data</span><span class="s2">.</span><span class="s1">image</span><span class="s2">();</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">price </span><span class="s2">= </span><span class="s1">data</span><span class="s2">.</span><span class="s1">price</span><span class="s2">();</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">title </span><span class="s2">= </span><span class="s1">data</span><span class="s2">.</span><span class="s1">title</span><span class="s2">();</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
