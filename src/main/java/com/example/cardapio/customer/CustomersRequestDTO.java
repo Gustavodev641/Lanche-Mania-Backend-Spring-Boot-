@@ -6,5 +6,6 @@ public record CustomersRequestDTO(
         String name,
         String cpf,
         String telefone,
-        String email
+        String email,
+        String password
 ) {}

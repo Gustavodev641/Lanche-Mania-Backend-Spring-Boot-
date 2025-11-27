@@ -1,15 +1,21 @@
 package com.example.cardapio.controller;
 
 import com.example.cardapio.customer.*;
-import jakarta.transaction.Transactional;
+import com.example.cardapio.login.CustomerLoginResponseDTO;
+import com.example.cardapio.login.LoginRequestDTO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/food/Customers")
@@ -19,13 +25,28 @@ public class CustomersController {
     @Autowired
     private CustomersRepository repository;
 
-    // POST - Agora devolve o cliente criado + status 201
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    // CADASTRO - Criptografa a senha com BCrypt
     @PostMapping
-    public ResponseEntity<CustomersResponseDTO> criarCliente(
+    public ResponseEntity<?> criarCliente(
             @RequestBody CustomersRequestDTO data,
             @NotNull UriComponentsBuilder uriBuilder) {
 
+        // Verificar se o email já existe
+        if (repository.existsByEmail(data.email())) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Email já cadastrado");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
+
         Customers cliente = new Customers(data);
+
+
+        String senhaCriptografada = passwordEncoder.encode(data.password());
+        cliente.setPassword(senhaCriptografada);
+
         repository.save(cliente);
 
         URI uri = uriBuilder.path("/food/Customers/{id}")
@@ -34,6 +55,31 @@ public class CustomersController {
 
         return ResponseEntity.created(uri)
                 .body(new CustomersResponseDTO(cliente));
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO data) {
+        Optional<Customers> customerOpt = repository.findByEmail(data.email());
+
+        if (customerOpt.isEmpty()) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Email ou senha incorretos");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        }
+
+        Customers customer = customerOpt.get();
+
+
+        if (!passwordEncoder.matches(data.password(), customer.getPassword())) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", "Email ou senha incorretos");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        }
+
+
+        CustomerLoginResponseDTO response = new CustomerLoginResponseDTO(customer);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
@@ -45,7 +91,7 @@ public class CustomersController {
         return ResponseEntity.notFound().build();
     }
 
-
+    // LISTAR TODOS
     @GetMapping
     public ResponseEntity<List<CustomersResponseDTO>> listarTodos() {
         List<CustomersResponseDTO> lista = repository.findAll().stream()
@@ -54,6 +100,4 @@ public class CustomersController {
 
         return ResponseEntity.ok(lista);
     }
-
-
 }

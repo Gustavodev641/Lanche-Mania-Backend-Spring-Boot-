@@ -7,15 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
-
 @Table(name = "customers")
 @Entity(name = "customers")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-
-public class Customers  {
+public class Customers {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +28,13 @@ public class Customers  {
     @Column(name = "telefone")
     private String telefone;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
+    @Column(name = "password")
     private String password;
 
+    @Column(name = "role")
     private String role = "USER";
 
     public Customers(@NotNull CustomersRequestDTO data) {
@@ -44,7 +44,4 @@ public class Customers  {
         this.email = data.email();
 
     }
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
 }
-
